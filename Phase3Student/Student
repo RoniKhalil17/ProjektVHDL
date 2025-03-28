@@ -32,9 +32,7 @@ architecture Behavioral of student_code is
    ---<<<<<<<<<<<<<<>>>>>>>>>>>>>>>---
    ---<<<<< Pregenerated code >>>>>---
    ---<<<<<<<<<<<<<<>>>>>>>>>>>>>>>---
-   
-   type StateType is (S1, S2, S3, S4, S5, S6, S7, S8); --defining states
-   signal current_state, next_state: StateType;
+
    
    --Creating user friently names for the buttons
    alias btn_u : std_logic is btn(0); --Button UP
@@ -66,10 +64,6 @@ architecture Behavioral of student_code is
    --Uncomment the following line if you want to use a manual clock connected to button down 
    alias clk : std_logic is btn_d;
    
-   alias reset : std_logic is btn_u; -- alias for reset
-   
-   alias cw : std_logic is sw(0); -- alias for cw
-   
    ---<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>---
    ---<<<<< End of pregenerated code >>>>>---
    ---<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>---
@@ -77,7 +71,12 @@ architecture Behavioral of student_code is
    --------------------------------------------------------------------------
    --From here onward you can write your signal and component declarations --
    --------------------------------------------------------------------------
+   type StateType is (S1, S2, S3, S4, S5, S6, S7, S8); --defining states
+   signal current_state, next_state: StateType;
    
+   alias reset : std_logic is btn_u; -- alias for reset
+   
+   alias cw : std_logic is sw(0); -- alias for cw
    
 begin
    ---<<<<<<<<<<<<<<>>>>>>>>>>>>>>>---
