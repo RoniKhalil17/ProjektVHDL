@@ -1,0 +1,222 @@
+----------------------------------------------------------------------------------
+--Here is the top level file where students should write their VHDL code
+----------------------------------------------------------------------------------
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx primitives in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity student_code is
+    Port ( btn : in  STD_LOGIC_VECTOR (4 downto 0);
+           sw : in  STD_LOGIC_VECTOR (7 downto 0);
+           led : out  STD_LOGIC_VECTOR (7 downto 0);
+           sseg : out  STD_LOGIC_VECTOR (7 downto 0);
+           an : out  STD_LOGIC_VECTOR (3 downto 0);
+           hex : out STD_LOGIC_VECTOR (15 downto 0);
+           useHex47Seg : out  STD_LOGIC;
+           pbtn : in  STD_LOGIC_VECTOR (3 downto 0);
+           psw : in  STD_LOGIC_VECTOR (3 downto 0);
+           pled : out  STD_LOGIC_VECTOR (2 downto 0);
+           sink : out STD_LOGIC;
+           clk125 : in  STD_LOGIC);
+end student_code;
+
+architecture Behavioral of student_code is
+   ---<<<<<<<<<<<<<<>>>>>>>>>>>>>>>---
+   ---<<<<< Pregenerated code >>>>>---
+   ---<<<<<<<<<<<<<<>>>>>>>>>>>>>>>---
+   
+   --Creating user friently names for the buttons
+   alias btn_u : std_logic is btn(0); --Button UP
+   alias btn_l : std_logic is btn(1); --Button LEFT
+   alias btn_d : std_logic is btn(2); --Button DOWN
+   alias btn_r : std_logic is btn(3); --Button RIGHT
+   alias btn_s : std_logic is btn(4); --Button SELECT (center button)
+   alias btn_c : std_logic is btn(4); --Button CENTER
+   
+   --Creating user friendly names for the segments in the 7-segment displays
+   alias sseg_dot : std_logic is sseg(7); --DOT
+   alias sseg_a : std_logic is sseg(6); --A
+   alias sseg_b : std_logic is sseg(5); --B
+   alias sseg_c : std_logic is sseg(4); --C
+   alias sseg_d : std_logic is sseg(3); --D
+   alias sseg_e : std_logic is sseg(2); --E
+   alias sseg_f : std_logic is sseg(1); --F
+   alias sseg_g : std_logic is sseg(0); --G
+
+   signal sink_sw : std_logic;
+   signal sink_psw : std_logic;
+   signal sink_btn : std_logic;
+   signal sink_pbtn : std_logic;
+
+   --Uncomment the following line if you want the signal clk to be an alias to the 
+   --125 MHz system clock
+   --alias clk : std_logic is clk125;
+   
+   --Uncomment the following line if you want to use a manual clock connected to button down 
+   alias clk : std_logic is btn_d;
+   
+   ---<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>---
+   ---<<<<< End of pregenerated code >>>>>---
+   ---<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>---
+
+   --------------------------------------------------------------------------
+   --From here onward you can write your signal and component declarations --
+   --------------------------------------------------------------------------
+   
+   alias reset : std_logic is btn_u; -- alias for reset  
+   alias cw : std_logic is sw(0); -- alias for cw
+   
+   signal n : STD_LOGIC_VECTOR (2 downto 0);
+   
+   signal s : STD_LOGIC_VECTOR (2 downto 0);
+   
+   signal pos : STD_LOGIC_VECTOR (1 downto 0);
+   
+begin
+   ---<<<<<<<<<<<<<<>>>>>>>>>>>>>>>---
+   ---<<<<< Pregenerated code >>>>>---
+   ---<<<<<<<<<<<<<<>>>>>>>>>>>>>>>---
+   
+   --Configure the 7 segment displays to be controlled as:
+   --  * a hexadecimal display, which means that you can put a 16 bit hexadecimal value
+   --    on the "hex" output and it will be displayed as 4 hexadecimal digits on the
+   --    7 segment displays. The most signifficant 4 bits from the "hex" output would 
+   --    correspond to the left most 7 segment display. For selecting the hexadecimal
+   --    display the useHex47seg output should have the value '1'
+   --  * a 7 segment display where each segment can be controlled individually. This is
+   --    the default way the 7-segment displays on FPGA boards work. For selecting this
+   --    mode the useHex47seg output should have the value '0'
+   useHex47Seg <= '0';
+   
+   --In order to avoid warnings or errors all outputs should be assigned a value. 
+   --The VHDL lines below assign a value to each otput signal. An otput signal can have
+   --only one driver, so each otput signal that you plan to use in your own VHDL code
+   --should be commented out in the lines below 
+
+   
+   --Virtual Leds on Zybo VIO (active high)
+   led(0) <= '0';
+   led(1) <= '0';
+   led(2) <= '0'; 
+   led(3) <= '0'; 
+   led(4) <= '0'; 
+   led(5) <= '0'; 
+   led(6) <= '0'; 
+   led(7) <= '0'; 
+
+   --Physical leds on the Zybo board (active high)
+   pled(0) <= '0';
+   pled(1) <= '0';
+   pled(2) <= '0';
+
+   --Virtual hexadecimal display on Zybo VIO
+   hex <= X"1234";
+
+   --Virtual 7-segment displays on Zybo VIO (active low)
+   --sseg(0) <= '1';
+   --sseg(1) <= '1';
+   --sseg(2) <= '1';
+   --sseg(3) <= '1';
+   --sseg(4) <= '1';
+   --sseg(5) <= '1';
+   --sseg(6) <= '1';
+   --sseg(7) <= '1';
+  
+   --Virtual anodes for the 7-segment displays on the Zybo VIO (active low)
+   --an(0) <= '1'; 
+   --an(1) <= '1'; 
+   --an(2) <= '1'; 
+   --an(3) <= '1'; 
+
+   --All the input signals comming to the FPGA should be used at least once otherwise we get 
+   --synthesis warnings. The following lines of VHDL code are meant to remove those warnings. 
+   --Sink is just an output signal that that has the only purpose to allow all the inputs to 
+   --be used at least once, by orring them and assigning the resulting the value to sink.
+   --You are not suppoosed to modify the following lines of VHDL code, where inputs are orred and
+   --assigned to the sink. 
+   sink_psw <= psw(0) or psw(1) or psw(2) or psw(3);
+   sink_pbtn <= pbtn(0) or pbtn(1) or pbtn(2) or pbtn(3);
+   sink_sw <= sw(0) or sw(1) or sw(2) or sw(3) or sw(4) or sw(5) or sw(6) or sw(7); 
+   sink_btn <= btn(0) or btn(1) or btn(2) or btn(3) or btn(4);
+   sink <= clk125 or sink_sw or sink_psw or sink_btn or sink_pbtn;
+
+   ---<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>---
+   ---<<<<< End of pregenerated code >>>>>---
+   ---<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>---
+
+   --------------------------------------------------
+   --From here onward you can write your VHDL code.--
+   -------------------------------------------------- 
+   
+   state_register: process(clk, reset) --clk and reset
+    begin 
+       if reset = '1' then
+           s <= "000";
+         elsif (clk'event and clk = '1') then
+           s <= n;
+       end if;
+    end process state_register;
+    
+    p_muxState : process(s, cw)
+          begin
+            case cw is
+              when '0' => n <= std_logic_vector(unsigned(s) + "001");
+              when '1' => n <= std_logic_vector(unsigned(s) + "111");
+            end case;
+    end process p_muxState;
+    
+    segment_logic: process (s(2))
+     begin
+        sseg_a <= '1';
+        sseg_b <= '1';
+        sseg_c <= '1';
+        sseg_d <= '1';
+        sseg_e <= '1';
+        sseg_f <= '1';
+        sseg_g <= '1';
+        sseg_dot <= '1';
+        case s(2) is
+            when '1' =>
+                sseg_g <= '0';
+                sseg_c <= '0';
+                sseg_e <= '0';
+                sseg_d <= '0';
+            when '0' =>
+                sseg_g <= '0';
+                sseg_f <= '0';
+                sseg_b <= '0';
+                sseg_a <= '0';
+        end case;
+      end process segment_logic;
+      
+      p_muxAn : process(s)
+         begin
+           case s(2) is
+             when '0' => pos <= s(1 downto 0);
+             when '1' => pos <= not s(1 downto 0);
+           end case;
+      end process p_muxAn;
+      
+      anode_logic: process (pos)
+        begin
+            an <= "1111";
+            case pos is
+                when "00" =>
+                    an(3) <= '0';
+                when "01" =>
+                    an(2) <= '0';
+                when "10" =>
+                    an(1) <= '0';
+                when "11" =>
+                    an(0) <= '0';    
+            end case;
+        end process anode_logic;  
+end Behavioral;
